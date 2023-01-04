@@ -3,10 +3,7 @@ from pynput import mouse
 
 
 def on_click(x: int, y: int, button, pressed: bool):
-    print(1)
     game_detector.detect_field(x, y)
-
-    lst = [x for x in range(10) if x % 2 == 0]
 
 
 def main():
