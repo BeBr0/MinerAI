@@ -1,15 +1,17 @@
+import time
+
 import game_detector
 from pynput import mouse
 
 
 class Main:
     def __init__(self):
-        self.timer = 0
         self.listener = mouse.Listener(on_click=self.on_click, suppress=False)
 
     def on_click(self, x: int, y: int, button, pressed: bool):
-        game_detector.detect_field(x, y)
         self.listener.stop()
+        time.sleep(2)
+        print(game_detector.detect_field(x, y))
 
     def main(self):
         print('Привет, я ИИ, решающий игру Сапера. Чтобы начать напиши start: ')
@@ -26,5 +28,4 @@ class Main:
 
 
 if __name__ == '__main__':
-    timer = 0
     Main().main()
