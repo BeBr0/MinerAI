@@ -1,11 +1,9 @@
 import pyautogui
 
 
-def take_screenshot(x1: int, y1: int, x2: int, y2: int):
-    screenshot = pyautogui.screenshot(region=(x1, y1, x2, y2))
-    return screenshot
-
-
 def detect_field(x: int, y: int):
-    screenshot = take_screenshot(x-50, y-50, x+50, y+50)
-    screenshot.save("screenshot.png")
+    for i in range(x, x+100):
+        for j in range(y, y+100):
+            pixel = pyautogui.pixel(i, j)
+
+
