@@ -1,6 +1,6 @@
 import time
 
-import game_detector
+from game_detector import FieldDetector
 from pynput import mouse
 
 
@@ -11,7 +11,7 @@ class Main:
     def on_click(self, x: int, y: int, button, pressed: bool):
         self.listener.stop()
         time.sleep(2)
-        print(game_detector.detect_field(x, y))
+        print(FieldDetector(x, y).detect_field())
 
     def main(self):
         print('Привет, я ИИ, решающий игру Сапера. Чтобы начать напиши start: ')
