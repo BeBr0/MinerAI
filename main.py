@@ -15,7 +15,12 @@ class Main:
         if not self.called:
             self.called = True
             time.sleep(2)
-            print(FieldDetector(x, y).detect_field())
+            field = FieldDetector(x, y).detect_field()
+
+            for row in field:
+                for item in row:
+                    print(item, end=' ')
+                print()
 
     def main(self):
         print('Привет, я ИИ, решающий игру Сапера. Чтобы начать напиши start: ')

@@ -1,6 +1,6 @@
-from cell_type import Cell
 from PIL import ImageGrab
-import turtle
+
+import cell_type
 
 
 class FieldDetector:
@@ -10,14 +10,10 @@ class FieldDetector:
         self.IMAGE.save('screen.gif')
 
         self.X, self.Y = self.__get_border_pixel(x, y)
-        # self.turtle = turtle.Turtle()
-        # self.screen = turtle.Screen()
-        # self.screen.addshape('screen.gif')
-        # self.turtle.shape('screen.gif')
 
         self.SIZE_OF_SQUARE = self.__get_square_size()
 
-    def detect_field(self) -> list[[Cell]]:
+    def detect_field(self) -> list[[int]]:
         print(f'[LOG]: Starting field detection. Square size is {self.SIZE_OF_SQUARE}')
 
         print(f'[LOG]: Border pixels are {self.X} {self.Y}')
@@ -25,36 +21,32 @@ class FieldDetector:
         i = self.X
         j = self.Y
 
-        # self.turtle.penup()
-        # self.turtle.speed(1)
-        # self.turtle.goto(i, j)
-        # self.turtle.pendown()
-
-        # print('dot')
-        # self.turtle.dot(3, (255, 3, 3))
-
         field_size_x, field_size_y = self.__get_field_size()
 
         print(f'[LOG]: Field size is {field_size_x} {field_size_y}')
         field = []
 
-        i += self.SIZE_OF_SQUARE / 2
-        j += self.SIZE_OF_SQUARE / 2
-
         for ctr_i in range(field_size_x):
             field.append([])
             for ctr_j in range(field_size_y):
-                pixel = self.IMAGE.getpixel((i, j))
+                cell = []
+                for square_x in range(self.SIZE_OF_SQUARE):
+                    for square_y in range(self.SIZE_OF_SQUARE):
+                        cell.append(self.IMAGE.getpixel((i + square_x, j + square_y)))
 
-                for cell_type in Cell:
-                    if cell_type.color == pixel:
-                        field[-1].append(cell_type)
+                for cell_t in cell_type.Cell:
+                    is_broken = False
+                    for color in cell_t.colors:
+                        if color not in cell:
+                            is_broken = True
+                            break
+
+                    if not is_broken:
+                        field[-1].append(cell_t.num)
                         break
 
-                i += self.SIZE_OF_SQUARE
-
-            j += self.SIZE_OF_SQUARE
-            i = self.X + self.SIZE_OF_SQUARE
+            i += self.SIZE_OF_SQUARE
+        j += self.SIZE_OF_SQUARE
 
         return field
 
@@ -68,9 +60,26 @@ class FieldDetector:
             if self.IMAGE.getpixel((i, j - 1)) != (128, 128, 128):
                 j -= 1
 
-            if self.IMAGE.getpixel((i - 1, j)) == (128, 128, 128) \
-                    and self.IMAGE.getpixel((i, j - 1)) == (128, 128, 128):
-                return i, j
+            if self.IMAGE.getpixel((i - 1, j)) == (128, 128, 128) and self.IMAGE.getpixel((i, j - 1)) == \
+                    (128, 128, 128) and self.IMAGE.getpixel((i, j)) == (236, 236, 236):
+
+                i -= 1
+                j -= 1
+
+                initial_i = i
+                initial_j = j
+
+                while True:
+                    j -= 1
+
+                    if self.IMAGE.getpixel((i, j - 1)) != (128, 128, 128) and self.IMAGE.getpixel((i - 1, j)) != (
+                    236, 236, 236):
+                        return i, j
+                    if self.IMAGE.getpixel((i, j - 1)) != (128, 128, 128) or self.IMAGE.getpixel((i - 1, j)) != (
+                    236, 236, 236):
+                        i -= initial_i - 1
+                        j -= initial_j - 1
+                        break
 
     def __get_square_size(self) -> int:
         i = self.X
@@ -100,24 +109,38 @@ class FieldDetector:
         return size_of_square - 1
 
     def __get_field_size(self) -> tuple[int, int]:
-        i = self.X - 1 + self.SIZE_OF_SQUARE // 2
-        j = self.Y - 1 + self.SIZE_OF_SQUARE // 2
-
-        pixel = self.IMAGE.getpixel((i, j))
+        i = self.X + self.SIZE_OF_SQUARE // 2
+        j = self.Y + self.SIZE_OF_SQUARE // 2
 
         field_size_x = 0
-        while pixel != (255, 255, 255):
+        while True:
             field_size_x += 1
 
             i += self.SIZE_OF_SQUARE
-            pixel = self.IMAGE.getpixel((i, j))
+
+            is_broken = True
+            for index in range(self.SIZE_OF_SQUARE):
+                if self.IMAGE.getpixel((i + index, j)) != (255, 255, 255):
+                    is_broken = False
+                    break
+
+            if is_broken:
+                break
 
         i = self.X + self.SIZE_OF_SQUARE // 2
         field_size_y = 0
-        while pixel != (255, 255, 255):
+        while True:
             field_size_y += 1
 
             j += self.SIZE_OF_SQUARE
-            pixel = self.IMAGE.getpixel((i, j))
 
-        return field_size_x - 1, field_size_y - 1
+            is_broken = True
+            for index in range(self.SIZE_OF_SQUARE):
+                if self.IMAGE.getpixel((i, j + index)) != (255, 255, 255):
+                    is_broken = False
+                    break
+
+            if is_broken:
+                break
+
+        return field_size_x - 2, field_size_y - 3
