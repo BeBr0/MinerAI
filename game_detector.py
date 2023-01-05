@@ -12,10 +12,13 @@ class FieldDetector:
         self.SIZE_OF_SQUARE = self.__get_square_size()
 
     def detect_field(self) -> list[[Cell]]:
+        print(f'[LOG]: Starting field detection. Cube size is {self.SIZE_OF_SQUARE}')
         i, j = self.__get_border_pixel()
 
+        print(f'[LOG]: Border pixels are {i} {j}')
         field_size_x, field_size_y = self.__get_field_size()
 
+        print(f'[LOG]: Field size is {field_size_x} {field_size_y}')
         field = []
 
         i += self.SIZE_OF_SQUARE / 2
@@ -58,23 +61,29 @@ class FieldDetector:
 
         pixel = self.IMAGE.getpixel((i, self.Y))
 
-        # TODO if top of square is white count til grey, if grey, count til dark gray
-
         size_of_square = 0
 
         if pixel == (255, 255, 255):
-            while pixel == (255, 255, 255):  # Counting size
+            print('Found closed square')
+            while pixel != (128, 128, 128):  # Counting size
                 size_of_square += 1
 
                 i += 1
                 pixel = self.IMAGE.getpixel((i, self.Y))
 
-        elif pixel == ()
+        elif pixel == (198, 198, 198):
+            print('Empty or digit square found')
+            while pixel != (128, 128, 128):
+                size_of_square += 1
+
+                i += 1
+                pixel = self.IMAGE.getpixel((i, self.Y))
+
         return size_of_square
 
     def __get_field_size(self) -> tuple[int, int]:
-        i = self.X + self.SIZE_OF_SQUARE
-        j = self.Y + self.SIZE_OF_SQUARE
+        i = self.X + self.SIZE_OF_SQUARE // 2
+        j = self.Y + self.SIZE_OF_SQUARE // 2
 
         pixel = self.IMAGE.getpixel((i, j))
 
@@ -82,15 +91,15 @@ class FieldDetector:
         while pixel != (255, 255, 255):
             field_size_x += 1
 
-            i += self.SIZE_OF_SQUARE / 2
+            i += self.SIZE_OF_SQUARE
             pixel = self.IMAGE.getpixel((i, j))
 
-        i = self.X + self.SIZE_OF_SQUARE
+        i = self.X + self.SIZE_OF_SQUARE // 2
         field_size_y = 0
         while pixel != (255, 255, 255):
             field_size_y += 1
 
-            j += self.SIZE_OF_SQUARE / 2
+            j += self.SIZE_OF_SQUARE
             pixel = self.IMAGE.getpixel((i, j))
 
-        return field_size_x - 2, field_size_y - 2
+        return field_size_x - 1, field_size_y - 1
