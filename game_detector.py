@@ -53,19 +53,23 @@ class FieldDetector:
                 return i, j
 
     def __get_square_size(self) -> int:
-        i = self.X
+        i = self.X + 1
+        j = self.Y + 1
 
         pixel = self.IMAGE.getpixel((i, self.Y))
 
         # TODO if top of square is white count til grey, if grey, count til dark gray
 
         size_of_square = 0
-        while pixel != (255, 255, 255):  # Counting size
-            size_of_square += 1
 
-            i += 1
-            pixel = self.IMAGE.getpixel((i, self.Y))
+        if pixel == (255, 255, 255):
+            while pixel == (255, 255, 255):  # Counting size
+                size_of_square += 1
 
+                i += 1
+                pixel = self.IMAGE.getpixel((i, self.Y))
+
+        elif pixel == ()
         return size_of_square
 
     def __get_field_size(self) -> tuple[int, int]:
