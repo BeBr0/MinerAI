@@ -7,11 +7,15 @@ from pynput import mouse
 class Main:
     def __init__(self):
         self.listener = mouse.Listener(on_click=self.on_click, suppress=False)
+        self.called = False
 
     def on_click(self, x: int, y: int, button, pressed: bool):
         self.listener.stop()
-        time.sleep(2)
-        print(FieldDetector(x, y).detect_field())
+
+        if not self.called:
+            self.called = True
+            time.sleep(2)
+            print(FieldDetector(x, y).detect_field())
 
     def main(self):
         print('Привет, я ИИ, решающий игру Сапера. Чтобы начать напиши start: ')
