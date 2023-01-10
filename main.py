@@ -14,7 +14,6 @@ class Main:
 
         if not self.called:
             self.called = True
-            time.sleep(2)
             field = FieldDetector(x, y).detect_field()
 
             for row in field:
