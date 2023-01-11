@@ -14,6 +14,8 @@ class FieldDetector:
         self.field_size_x = 0
         self.field_size_y = 0
 
+        self.cubes = [[], []]
+
         self.IMAGE = ImageGrab.grab()
         self.X = x
         self.Y = y
@@ -32,55 +34,55 @@ class FieldDetector:
         time.sleep(1)
         field = []
 
-        y = self.Y + 1
         self.IMAGE = ImageGrab.grab(
             (self.X + 1, self.Y + 1, self.X + 1 + self.field_size_x, self.Y + 1 + self.field_size_y)
         )
 
-        for i in range(self.field_size_cubes_x):
+        click_x = self.X + 1
+        click_y = self.Y + 1
+
+        self.X = 0
+        self.Y = 0
+
+        self.IMAGE.save('screen.png')
+
+        x = 0
+        y = 0
+
+        sum_x = 0
+        sum_y = 0
+        for j in range(len(self.cubes[1])):
             field.append([])
-            x = self.X + 1
 
-            for j in range(self.field_size_cubes_y):
+            sum_x = 0
+            for i in range(len(self.cubes[0])):
 
-                current_cube = []
-                for cube_x in range(self.field_size_x // self.field_size_cubes_x):
-                    current_cube.append([])
-                    for cube_y in range(self.field_size_y // self.field_size_cubes_y):
-                        current_cube[-1].append(self.IMAGE.getpixel((x + cube_x, y + cube_y)))
+                pixels = []
+                for cube_y in range(1, self.cubes[1][j] - 1):
+                    pixels.append([])
 
-                field[-1].append(self.define_cube_type(current_cube))
+                    for cube_x in range(1, self.cubes[0][i] - 1):
+                        pixels[-1].append(self.IMAGE.getpixel((sum_x + cube_x, sum_y + cube_y)))
 
-                x += self.field_size_x // self.field_size_cubes_x - 1
+                field[-1].append(self.define_cube_type(pixels))
 
-            y += self.field_size_y // self.field_size_cubes_y - 1
+                sum_x += self.cubes[0][i]
+            sum_y += self.cubes[1][j]
 
-        print(self.cells)
         return field
 
     def define_cube_type(self, pixels: list[list[tuple[int, int, int]]]) -> cell_type.Cell:
-        cell_pixels = []
-        for cell in pixels:
-            for pixel in cell:
-                if pixel not in cell_pixels:
-                    cell_pixels.append(pixel)
-
-        if cell_pixels not in self.cells:
-            self.cells.append(cell_pixels)
-
         for cell in cell_type.Cell:
-            is_broken = False
-            for i in range(len(pixels)):
-                for j in range(len(pixels[i])):
-                    if pixels[i][j] not in cell.colors:
-                        is_broken = True
-                        break
+            if cell is not cell_type.Cell.CLOSED or cell is not cell_type.Cell.EMPTY:
+                for i in range(len(pixels)):
+                    for j in range(len(pixels[i])):
+                        if pixels[i][j] in cell.colors:
+                            return cell
 
-                if is_broken:
-                    break
-
-            if not is_broken:
-                return cell
+        if (255, 255, 255) in pixels:
+            return cell_type.Cell.CLOSED
+        else:
+            return cell_type.Cell.EMPTY
 
     def find_top_left(self):
         i = self.X
@@ -116,7 +118,9 @@ class FieldDetector:
 
             if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.IMAGE.getpixel((x, y)) == (
                     186, 186, 186) and self.IMAGE.getpixel((x + 1, y)) == (128, 128, 128)):
-                current_cell = 0
+                self.cubes[0].append(current_cell)
+
+                current_cell = 1
                 self.field_size_cubes_x += 1
                 self.field_size_x += 1
                 x += 1
@@ -137,7 +141,9 @@ class FieldDetector:
 
             if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.IMAGE.getpixel((x, y)) == (
                     186, 186, 186) and self.IMAGE.getpixel((x, y + 1)) == (128, 128, 128)):
-                current_cell = 0
+                self.cubes[1].append(current_cell)
+
+                current_cell = 1
                 self.field_size_cubes_y += 1
                 self.field_size_y += 1
                 y += 1
