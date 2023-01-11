@@ -6,11 +6,11 @@ class Cell(Enum):
     def __init__(self, colors: list[tuple[int, int, int]]):
         self.colors = colors
 
-    CLOSED = (
-        [(255, 255, 255)]
-    )
+    CLOSED = ([(255, 255, 255)])
 
     EMPTY = ([])
+
+    FLAG = ([(254,62,64)])
 
     ONE = ([(0, 0, 255)])
 

@@ -38,9 +38,6 @@ class FieldDetector:
             (self.X + 1, self.Y + 1, self.X + 1 + self.field_size_x, self.Y + 1 + self.field_size_y)
         )
 
-        click_x = self.X + 1
-        click_y = self.Y + 1
-
         self.X = 0
         self.Y = 0
 
