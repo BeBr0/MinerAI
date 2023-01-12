@@ -41,6 +41,8 @@ class GameField:
 
         self.detect_field()
 
+        self.i = 0
+
     def detect_field(self):
         self.__find_top_left()
         print(f'found border at {self.__field_start_x} {self.__field_start_y}')
@@ -64,11 +66,9 @@ class GameField:
             sum_y += self.__cubes[1][i]
 
         if cell == cell_type.Cell.FLAG:
-            pag.moveTo(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2)
-            pag.click(button='SECONDARY')
+            pag.click(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2, button='SECONDARY')
         elif cell == cell_type.Cell.EMPTY:
-            pag.moveTo(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2)
-            pag.click(button='PRIMARY')
+            pag.click(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2, button='PRIMARY')
 
     def update_field(self):
         self.__IMAGE = ImageGrab.grab((
@@ -78,12 +78,16 @@ class GameField:
             self.__field_start_y + 1 + self.field_size_y
         ))
 
-        sum_x = 0
-        for i in range(len(self.field_array)):
+        self.i += 1
 
-            sum_y = 0
-            for j in range(len(self.field_array[i])):
-                if self.field_array[i][j] == cell_type.Cell.CLOSED:
+        sum_y = 0
+        for j in range(len(self.__cubes[1])):
+
+            sum_x = 0
+            for i in range(len(self.__cubes[0])):
+
+                if self.field_array[j][i] == cell_type.Cell.CLOSED:
+
                     pixels = []
                     for cube_y in range(1, self.__cubes[1][j] - 1):
                         pixels.append([])
@@ -91,11 +95,10 @@ class GameField:
                         for cube_x in range(1, self.__cubes[0][i] - 1):
                             pixels[-1].append(self.__IMAGE.getpixel((sum_x + cube_x, sum_y + cube_y)))
 
-                    self.field_array[i][j] = define_cube_type(pixels)
+                    self.field_array[j][i] = define_cube_type(pixels)
 
-                sum_y += self.__cubes[1][j]
-
-            sum_x += self.__cubes[0][i]
+                sum_x += self.__cubes[0][i]
+            sum_y += self.__cubes[1][j]
 
     def __build_field(self):
         self.__IMAGE = ImageGrab.grab(
@@ -104,8 +107,6 @@ class GameField:
 
         self.__X = 0
         self.__Y = 0
-
-        self.__IMAGE.save('screen.png')
 
         sum_y = 0
         for j in range(len(self.__cubes[1])):
