@@ -90,7 +90,6 @@ class Game:
                                             elif self.game_field.field_array[i + x][j + y] == Cell.FLAG:
                                                 flags_num += 1
 
-                            print(flags_num, len(cords_x), ceil_type)
                             if flags_num + len(cords_x) == ceil_type.num:
                                 action_done = True
                                 for num in range(len(cords_x)):

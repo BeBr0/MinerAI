@@ -20,11 +20,17 @@ class Main:
             self.called = True
             self.game = Game(GameField(x, y))
 
-            self.stop_listener.stop()
+        self.program_stop_listener(keyboard.Key.backspace)
 
     def program_stop_listener(self, key):
         if key == keyboard.Key.backspace:
-            self.game.is_stopped = True
+            self.stop_listener.stop()
+            try:
+                self.game.is_stopped = True
+            except AttributeError:
+                pass
+
+            exit(0)
 
     def main(self):
         print('Привет, я ИИ, решающий игру Сапера. Чтобы начать напиши start: ')

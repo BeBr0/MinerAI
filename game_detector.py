@@ -43,7 +43,7 @@ class GameField:
 
     def detect_field(self):
         self.__find_top_left()
-        print(f'found border at {self.__X} {self.__Y}')
+        print(f'found border at {self.__field_start_x} {self.__field_start_y}')
 
         self.__get_field_sizes()
 
@@ -57,16 +57,18 @@ class GameField:
     def put(self, x: int, y: int, cell: cell_type.Cell):
         sum_x = 0
         sum_y = 0
-        for i in range(x):
+        for i in range(y):
             sum_x += self.__cubes[0][i]
 
-        for i in range(y):
+        for i in range(x):
             sum_y += self.__cubes[1][i]
 
         if cell == cell_type.Cell.FLAG:
-            pag.click(self.__field_start_x + sum_x + 1, self.__field_start_y + sum_y + 1, button='SECONDARY')
+            pag.moveTo(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2)
+            pag.click(button='SECONDARY')
         elif cell == cell_type.Cell.EMPTY:
-            pag.click(self.__field_start_x + sum_x + 1, self.__field_start_y + sum_y + 1, button='PRIMARY')
+            pag.moveTo(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2)
+            pag.click(button='PRIMARY')
 
     def update_field(self):
         self.__IMAGE = ImageGrab.grab((
