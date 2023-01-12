@@ -1,6 +1,5 @@
 import time
 
-import pyautogui
 import pyautogui as pag
 from PIL import ImageGrab
 
@@ -9,27 +8,22 @@ import cell_type
 
 def define_cube_type(pixels: list[list[tuple[int, int, int]]]) -> cell_type.Cell:
     for cell in cell_type.Cell:
-        if cell is not cell_type.Cell.CLOSED and cell is not cell_type.Cell.EMPTY:
+        if cell is not cell_type.Cell.CLOSED or cell is not cell_type.Cell.EMPTY:
             for i in range(len(pixels)):
                 for j in range(len(pixels[i])):
                     if pixels[i][j] in cell.colors:
                         return cell
 
-    for row in pixels:
-        if (255, 0, 0) in row or (0, 0, 0) in row:
-            return cell_type.Cell.BOMB
-        elif (255, 255, 255) in row:
-            return cell_type.Cell.CLOSED
-
-    return cell_type.Cell.EMPTY
+    if (255, 255, 255) in pixels:
+        return cell_type.Cell.CLOSED
+    else:
+        return cell_type.Cell.EMPTY
 
 
 class GameField:
 
     def __init__(self, x: int, y: int):
-        self.IMAGE = ImageGrab.grab()
-
-        self.field_array: list[list[cell_type.Cell]] = []
+        self.field_array = []
         self.field_size_cubes_x = 0
         self.field_size_cubes_y = 0
 
@@ -38,24 +32,27 @@ class GameField:
 
         self.__cubes = [[], []]
 
+        self.__IMAGE = ImageGrab.grab()
         self.__X = x
         self.__Y = y
 
-        self.field_start_x = 0
-        self.field_start_y = 0
-        time.sleep(0.6)
+        self.__field_start_x = 0
+        self.__field_start_y = 0
 
         self.detect_field()
+
         self.i = 0
 
     def detect_field(self):
         self.__find_top_left()
-        print(f'found border at {self.field_start_x} {self.field_start_y}')
+        print(f'found border at {self.__field_start_x} {self.__field_start_y}')
 
         self.__get_field_sizes()
 
         print(f'Field sizes in cubes: {self.field_size_cubes_x} {self.field_size_cubes_y}'
               f'\nField sizes in pixels: {self.field_size_x} {self.field_size_y}')
+
+        time.sleep(1)
 
         self.__build_field()
 
@@ -69,22 +66,21 @@ class GameField:
             sum_y += self.__cubes[1][i]
 
         if cell == cell_type.Cell.FLAG:
-            pag.click(x=self.field_start_x + sum_x + 2, y=self.field_start_y + sum_y + 2, button='SECONDARY')
+            pag.click(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2, button='SECONDARY')
         elif cell == cell_type.Cell.EMPTY:
-            pag.click(x=self.field_start_x + sum_x + 2, y=self.field_start_y + sum_y + 2, button='PRIMARY')
+            pag.click(x=self.__field_start_x + sum_x + 2, y=self.__field_start_y + sum_y + 2, button='PRIMARY')
 
-    def update_field(self) -> bool:
-        self.IMAGE = ImageGrab.grab((
-            self.field_start_x + 1,
-            self.field_start_y + 1,
-            self.field_start_x + 1 + self.field_size_x,
-            self.field_start_y + 1 + self.field_size_y
+    def update_field(self):
+        self.__IMAGE = ImageGrab.grab((
+            self.__field_start_x + 1,
+            self.__field_start_y + 1,
+            self.__field_start_x + 1 + self.field_size_x,
+            self.__field_start_y + 1 + self.field_size_y
         ))
 
         self.i += 1
 
         sum_y = 0
-        result = False
         for j in range(len(self.__cubes[1])):
 
             sum_x = 0
@@ -97,20 +93,15 @@ class GameField:
                         pixels.append([])
 
                         for cube_x in range(1, self.__cubes[0][i] - 1):
-                            pixels[-1].append(self.IMAGE.getpixel((sum_x + cube_x, sum_y + cube_y)))
+                            pixels[-1].append(self.__IMAGE.getpixel((sum_x + cube_x, sum_y + cube_y)))
 
                     self.field_array[j][i] = define_cube_type(pixels)
-
-                    if self.field_array[j][i] == cell_type.Cell.BOMB:
-                        result = True
 
                 sum_x += self.__cubes[0][i]
             sum_y += self.__cubes[1][j]
 
-        return result
-
     def __build_field(self):
-        self.IMAGE = ImageGrab.grab(
+        self.__IMAGE = ImageGrab.grab(
             (self.__X + 1, self.__Y + 1, self.__X + 1 + self.field_size_x, self.__Y + 1 + self.field_size_y)
         )
 
@@ -129,7 +120,7 @@ class GameField:
                     pixels.append([])
 
                     for cube_x in range(1, self.__cubes[0][i] - 1):
-                        pixels[-1].append(self.IMAGE.getpixel((sum_x + cube_x, sum_y + cube_y)))
+                        pixels[-1].append(self.__IMAGE.getpixel((sum_x + cube_x, sum_y + cube_y)))
 
                 self.field_array[-1].append(define_cube_type(pixels))
 
@@ -143,7 +134,7 @@ class GameField:
         while True:
             is_border = True
             for num in range(0, 4):
-                if self.IMAGE.getpixel((i - num, j)) != (128, 128, 128):
+                if self.__IMAGE.getpixel((i - num, j)) != (128, 128, 128):
                     is_border = False
 
             if is_border:
@@ -151,17 +142,17 @@ class GameField:
 
             i -= 1
 
-        while self.IMAGE.getpixel((i + 1, j)) == (128, 128, 128):
+        while self.__IMAGE.getpixel((i + 1, j)) == (128, 128, 128):
             i += 1
 
-        while self.IMAGE.getpixel((i + 1, j)) != (128, 128, 128):
+        while self.__IMAGE.getpixel((i + 1, j)) != (128, 128, 128):
             j -= 1
 
         self.__X = i
         self.__Y = j
 
-        self.field_start_x = i + 1
-        self.field_start_y = j + 1
+        self.__field_start_x = i + 1
+        self.__field_start_y = j + 1
 
     def __get_field_sizes(self):
         x = self.__X + 2
@@ -169,10 +160,10 @@ class GameField:
 
         current_cell = 2
         self.field_size_x = 2
-        while self.IMAGE.getpixel((x, y)) != (198, 198, 198) or self.IMAGE.getpixel((x + 1, y)) != (198, 198, 198):
+        while self.__IMAGE.getpixel((x, y)) != (198, 198, 198) or self.__IMAGE.getpixel((x + 1, y)) != (198, 198, 198):
 
-            if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.IMAGE.getpixel((x, y)) == (
-                    186, 186, 186) and self.IMAGE.getpixel((x + 1, y)) == (128, 128, 128)):
+            if self.__IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.__IMAGE.getpixel((x, y)) == (
+                    186, 186, 186) and self.__IMAGE.getpixel((x + 1, y)) == (128, 128, 128)):
                 self.__cubes[0].append(current_cell)
 
                 current_cell = 1
@@ -192,10 +183,10 @@ class GameField:
         current_cell = 2
         self.field_size_y = 2
 
-        while self.IMAGE.getpixel((x, y)) != (198, 198, 198) or self.IMAGE.getpixel((x, y + 1)) != (198, 198, 198):
+        while self.__IMAGE.getpixel((x, y)) != (198, 198, 198) or self.__IMAGE.getpixel((x, y + 1)) != (198, 198, 198):
 
-            if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.IMAGE.getpixel((x, y)) == (
-                    186, 186, 186) and self.IMAGE.getpixel((x, y + 1)) == (128, 128, 128)):
+            if self.__IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.__IMAGE.getpixel((x, y)) == (
+                    186, 186, 186) and self.__IMAGE.getpixel((x, y + 1)) == (128, 128, 128)):
                 self.__cubes[1].append(current_cell)
 
                 current_cell = 1
