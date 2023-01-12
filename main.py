@@ -1,5 +1,6 @@
 import random
 
+import pyautogui
 import pyautogui as pag
 from pynput import mouse, keyboard
 
@@ -19,10 +20,14 @@ class Main:
 
     def on_click(self, x: int, y: int, button, pressed: bool):
         if not self.called:
+
             self.called = True
-            self.game = Game(GameField(x, y))
             self.listener.stop()
-            self.stop_listener.stop()
+
+            while True:
+                self.game = Game(GameField(x, y))
+                pyautogui.click(x=x, y=y, button='MIDDLE')
+                pyautogui.click(x=x, y=y)
 
     def on_pause(self, key):
         if key == keyboard.Key.backspace:
