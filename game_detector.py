@@ -82,8 +82,6 @@ class GameField:
             self.field_start_y + 1 + self.field_size_y
         ))
 
-        self.IMAGE.save('field.png')
-
         self.i += 1
 
         sum_y = 0
