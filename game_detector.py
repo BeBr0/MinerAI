@@ -76,11 +76,13 @@ class GameField:
 
     def update_field(self) -> bool:
         self.IMAGE = ImageGrab.grab((
-            self.field_start_x + 1,
-            self.field_start_y + 1,
+            self.field_start_x,
+            self.field_start_y,
             self.field_start_x + 1 + self.field_size_x,
             self.field_start_y + 1 + self.field_size_y
         ))
+
+        self.IMAGE.save('field.png')
 
         self.i += 1
 
