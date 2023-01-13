@@ -17,12 +17,19 @@ class Main:
         self.game = None
         self.wins = 0
 
+        self.field = None
+
     def on_click(self, x: int, y: int, button, pressed: bool):
-        if not self.called:
-            self.called = True
-            self.game = Game(GameField(x, y))
+        if self.field is None:
+            self.field = GameField(x, y)
+
             self.listener.stop()
-            self.stop_listener.stop()
+
+            print('Отлично, поле захвачено, старайся не двигать его и не перекрывать другими окнами. '
+                  'Теперь просто нажми Enter чтобы начать игру')
+
+            input()
+            Game(self.field)
 
     def on_pause(self, key):
         if key == keyboard.Key.backspace:
@@ -31,19 +38,16 @@ class Main:
             self.stop_listener.stop()
 
     def main(self):
-        print('Привет, я ИИ, решающий игру Сапера. Чтобы начать напиши start: ')
-        inp = input()
+        print('Привет, я ИИ, решающий игру Сапера. Чтобы начать нажми Enter: ')
+        input()
 
-        if inp == 'start':
-            print(
-                'Теперь нажми на любую клетку сапера. Не волнуйся, мины генерируются после первого нажатия :) (только '
-                'в '
-                'игре)')
+        print(
+            'Теперь нажми на любую клетку сапера. Не волнуйся, мины генерируются после первого нажатия :) (только '
+            'в '
+            'игре)')
 
-            self.listener.start()
-            self.listener.join()
-            self.stop_listener.start()
-            self.stop_listener.join()
+        self.listener.start()
+        self.listener.join()
 
 
 if __name__ == '__main__':

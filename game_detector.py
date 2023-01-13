@@ -52,7 +52,7 @@ class GameField:
         print(f'Field sizes in cubes: {self.field_size_cubes_x} {self.field_size_cubes_y}'
               f'\nField sizes in pixels: {self.field_size_x} {self.field_size_y}')
 
-        time.sleep(1)
+        time.sleep(0.6)
 
         self.__build_field()
 
