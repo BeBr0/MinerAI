@@ -4,15 +4,18 @@ from game_detector import GameField
 
 class Game:
 
-    def __init__(self, game_field: GameField):
+    def __init__(self, game_field: GameField, output: bool):
         self.game_field = game_field
 
         self.is_stopped = False
+        self.output = output
 
         self.__start_playing()
 
     def __start_playing(self):
-        print('\n=============================\n\nПогнали!')
+        if self.output:
+            print('\n=============================\n\nПогнали!')
+
         num = 1
         while num != 0:
             num = 0
@@ -27,13 +30,17 @@ class Game:
                     num += 1
 
             if self.is_stopped:
-                print('Останавливаю игру')
+
+                if self.output:
+                    print('Останавливаю игру')
                 return
 
-        print('Действия закончились')
+        if self.output:
+            print('Действия закончились')
 
     def __get_safe_spot(self) -> bool:
-        print('Пытаюсь угадать...')
+        if self.output:
+            print('Пытаюсь угадать...')
 
         chances = []
         for i in range(len(self.game_field.field_array)):
@@ -81,11 +88,13 @@ class Game:
                     min_y = j
 
         if min_x != -1:
-            print(f'Взял клетку с шансом {chances[min_x][min_y]} координаты {min_x} {min_y}')
+            if self.output:
+                print(f'Взял клетку с шансом {chances[min_x][min_y]} координаты {min_x} {min_y}')
             self.__open_ceil(min_x, min_y)
             if self.game_field.update_field():
                 self.is_stopped = True
-                print('Не угадал....')
+                if self.output:
+                    print('Не угадал....')
 
             return True
 
@@ -93,12 +102,14 @@ class Game:
 
     def __open_ceil(self, x: int, y: int):
         if self.game_field.field_array[x][y] == Cell.CLOSED:
-            print(f'Открываю клетку {x} {y}')
+            if self.output:
+                print(f'Открываю клетку {x} {y}')
             self.game_field.put(x, y, Cell.EMPTY)
 
     def __put_flag(self, x: int, y: int):
         if self.game_field.field_array[x][y] != Cell.FLAG:
-            print(f'Нашел мину в {x} {y}')
+            if self.output:
+                print(f'Нашел мину в {x} {y}')
             self.game_field.field_array[x][y] = Cell.FLAG
             self.game_field.put(x, y, Cell.FLAG)
 

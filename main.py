@@ -19,6 +19,8 @@ class Main:
 
         self.field = None
 
+        self.output = False
+
     def on_click(self, x: int, y: int, button, pressed: bool):
         if self.field is None:
             self.field = GameField(x, y)
@@ -31,7 +33,7 @@ class Main:
             input()
             field = copy.deepcopy(self.field)
             while True:
-                Game(field)
+                Game(field, self.output)
 
                 field_copy = []
                 for i in range(self.field.field_size_cubes_y):
