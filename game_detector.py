@@ -43,7 +43,6 @@ class GameField:
 
         self.field_start_x = 0
         self.field_start_y = 0
-        time.sleep(0.6)
 
         self.detect_field()
 
