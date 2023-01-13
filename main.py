@@ -1,5 +1,7 @@
+import copy
 import random
 
+import pyautogui
 import pyautogui as pag
 from pynput import mouse, keyboard
 
@@ -15,7 +17,6 @@ class Main:
         self.stop_listener = keyboard.Listener(on_click=self.on_pause, suppress=False)
 
         self.game = None
-        self.wins = 0
 
         self.field = None
 
@@ -29,7 +30,11 @@ class Main:
                   'Теперь просто нажми Enter чтобы начать игру')
 
             input()
-            Game(self.field)
+            Game(copy.deepcopy(self.field))
+            # while True:
+            #     Game(copy.deepcopy(self.field))
+            #     pag.click(x=x, y=y, button="MIDDLE")
+            #     pag.click(x=x, y=y, button="LEFT")
 
     def on_pause(self, key):
         if key == keyboard.Key.backspace:

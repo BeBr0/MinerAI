@@ -11,6 +11,7 @@ class Game:
         self.__start_playing()
 
     def __start_playing(self):
+        print('\n=============================\n\nПогнали!')
         num = 1
         while num != 0:
             num = 0
@@ -25,7 +26,10 @@ class Game:
                     num += 1
 
             if self.is_stopped:
+                print('Останавливаю игру')
                 return
+
+        print('Действия закончились')
 
     def __get_safe_spot(self) -> bool:
         print('Пытаюсь угадать...')
@@ -88,10 +92,12 @@ class Game:
 
     def __open_ceil(self, x: int, y: int):
         if self.game_field.field_array[x][y] == Cell.CLOSED:
+            print(f'Открываю клетку {x} {y}')
             self.game_field.put(x, y, Cell.EMPTY)
 
     def __put_flag(self, x: int, y: int):
         if self.game_field.field_array[x][y] != Cell.FLAG:
+            print(f'Нашел мину в {x} {y}')
             self.game_field.field_array[x][y] = Cell.FLAG
             self.game_field.put(x, y, Cell.FLAG)
 
