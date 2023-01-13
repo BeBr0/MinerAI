@@ -7,18 +7,19 @@ import cell_type
 
 
 def define_cube_type(pixels: list[list[tuple[int, int, int]]]) -> cell_type.Cell:
+
+    for row in pixels:
+        if (0, 0, 0) in row:
+            return cell_type.Cell.BOMB
+        elif (255, 255, 255) in row:
+            return cell_type.Cell.CLOSED
+
     for cell in cell_type.Cell:
         if cell is not cell_type.Cell.CLOSED and cell is not cell_type.Cell.EMPTY:
             for i in range(len(pixels)):
                 for j in range(len(pixels[i])):
                     if pixels[i][j] in cell.colors:
                         return cell
-
-    for row in pixels:
-        if (255, 0, 0) in row or (0, 0, 0) in row:
-            return cell_type.Cell.BOMB
-        elif (255, 255, 255) in row:
-            return cell_type.Cell.CLOSED
 
     return cell_type.Cell.EMPTY
 
@@ -45,7 +46,6 @@ class GameField:
         time.sleep(0.6)
 
         self.detect_field()
-        self.i = 0
 
     def detect_field(self):
         self.__find_top_left()
@@ -81,8 +81,6 @@ class GameField:
             self.field_start_x + 1 + self.field_size_x,
             self.field_start_y + 1 + self.field_size_y
         ))
-
-        self.i += 1
 
         sum_y = 0
         result = False

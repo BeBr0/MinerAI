@@ -6,6 +6,7 @@ class Game:
 
     def __init__(self, game_field: GameField):
         self.game_field = game_field
+
         self.is_stopped = False
 
         self.__start_playing()
@@ -104,7 +105,7 @@ class Game:
     def __detect_to_open(self) -> bool:
         action_done = False
         for ceil_type in Cell:
-            if ceil_type != Cell.FLAG and ceil_type != Cell.CLOSED and ceil_type != Cell.EMPTY:
+            if ceil_type != Cell.FLAG and ceil_type != Cell.CLOSED and ceil_type != Cell.EMPTY and ceil_type != Cell.BOMB:
                 for i in range(len(self.game_field.field_array)):
                     for j in range(len(self.game_field.field_array[i])):
                         if self.game_field.field_array[i][j] == ceil_type:

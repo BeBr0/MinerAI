@@ -1,10 +1,9 @@
 import copy
-import random
 
-import pyautogui
 import pyautogui as pag
 from pynput import mouse, keyboard
 
+import cell_type
 from game_ai import Game
 from game_detector import GameField
 
@@ -30,11 +29,22 @@ class Main:
                   'Теперь просто нажми Enter чтобы начать игру')
 
             input()
-            Game(copy.deepcopy(self.field))
-            # while True:
-            #     Game(copy.deepcopy(self.field))
-            #     pag.click(x=x, y=y, button="MIDDLE")
-            #     pag.click(x=x, y=y, button="LEFT")
+            field = copy.deepcopy(self.field)
+            while True:
+                Game(field)
+
+                field_copy = []
+                for i in range(self.field.field_size_cubes_y):
+                    field_copy.append([])
+                    for j in range(self.field.field_size_cubes_x):
+                        field_copy[-1].append(cell_type.Cell.CLOSED)
+
+                field.field_array = field_copy
+
+                pag.click(x=x, y=y, button="MIDDLE")
+                pag.click(x=x, y=y, button="LEFT")
+
+                field.update_field()
 
     def on_pause(self, key):
         if key == keyboard.Key.backspace:
