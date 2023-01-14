@@ -19,7 +19,7 @@ class Main:
 
         self.field = None
 
-        self.output = False
+        self.output = True
 
     def on_click(self, x: int, y: int, button, pressed: bool):
         if self.field is None:
@@ -31,6 +31,7 @@ class Main:
                   'Теперь просто нажми Enter чтобы начать игру')
 
             input()
+
             field = copy.deepcopy(self.field)
             while True:
                 Game(field, self.output)

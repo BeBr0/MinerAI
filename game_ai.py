@@ -1,3 +1,5 @@
+import time
+
 from cell_type import Cell
 from game_detector import GameField
 
@@ -111,7 +113,6 @@ class Game:
             if self.output:
                 print(f'Нашел мину в {x} {y}')
             self.game_field.field_array[x][y] = Cell.FLAG
-            self.game_field.put(x, y, Cell.FLAG)
 
     def __detect_to_open(self) -> bool:
         action_done = False

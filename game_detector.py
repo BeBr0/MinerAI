@@ -44,6 +44,8 @@ class GameField:
         self.field_start_x = 0
         self.field_start_y = 0
 
+        time.sleep(1)
+
         self.detect_field()
 
     def detect_field(self):
@@ -54,8 +56,6 @@ class GameField:
 
         print(f'Field sizes in cubes: {self.field_size_cubes_x} {self.field_size_cubes_y}'
               f'\nField sizes in pixels: {self.field_size_x} {self.field_size_y}')
-
-        time.sleep(0.6)
 
         self.__build_field()
 
@@ -140,7 +140,7 @@ class GameField:
 
         while True:
             is_border = True
-            for num in range(0, 4):
+            for num in range(0, 6):
                 if self.IMAGE.getpixel((i - num, j)) != (128, 128, 128):
                     is_border = False
 
@@ -169,8 +169,8 @@ class GameField:
         self.field_size_x = 2
         while self.IMAGE.getpixel((x, y)) != (198, 198, 198) or self.IMAGE.getpixel((x + 1, y)) != (198, 198, 198):
 
-            if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.IMAGE.getpixel((x, y)) == (
-                    186, 186, 186) and self.IMAGE.getpixel((x + 1, y)) == (128, 128, 128)):
+            if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or ((self.IMAGE.getpixel((x, y)) == (
+                    186, 186, 186) or self.IMAGE.getpixel((x, y)) == (191, 191, 191)) and self.IMAGE.getpixel((x + 1, y)) == (128, 128, 128)):
                 self.__cubes[0].append(current_cell)
 
                 current_cell = 1
@@ -182,6 +182,8 @@ class GameField:
             current_cell += 1
             x += 1
 
+            # Сделать чтобы было не равно 255
+
         self.field_size_x -= current_cell
 
         x = self.__X + 2
@@ -192,8 +194,8 @@ class GameField:
 
         while self.IMAGE.getpixel((x, y)) != (198, 198, 198) or self.IMAGE.getpixel((x, y + 1)) != (198, 198, 198):
 
-            if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or (self.IMAGE.getpixel((x, y)) == (
-                    186, 186, 186) and self.IMAGE.getpixel((x, y + 1)) == (128, 128, 128)):
+            if self.IMAGE.getpixel((x, y)) == (192, 192, 192) or ((self.IMAGE.getpixel((x, y)) == (
+                    186, 186, 186) or self.IMAGE.getpixel((x, y)) == (191, 191, 191)) and self.IMAGE.getpixel((x, y + 1)) == (128, 128, 128)):
                 self.__cubes[1].append(current_cell)
 
                 current_cell = 1
