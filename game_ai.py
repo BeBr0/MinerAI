@@ -1,20 +1,17 @@
-import time
-
 from cell_type import Cell
 from game_detector import GameField
 
 
 class Game:
 
-    def __init__(self, game_field: GameField, output: bool):
+    def __init__(self, game_field: GameField, output: bool, no_flags: bool):
         self.game_field = game_field
 
         self.is_stopped = False
         self.output = output
+        self.no_flags = no_flags
 
-        self.__start_playing()
-
-    def __start_playing(self):
+    def start_playing(self):
         if self.output:
             print('\n=============================\n\nПогнали!')
 
@@ -37,13 +34,19 @@ class Game:
                     print('Останавливаю игру')
                 return
 
+        win = True
+        for row in self.game_field.field_array:
+            for item in row:
+                if item == Cell.CLOSED:
+                    win = False
+
         if self.output:
-            print('Действия закончились')
+            if win:
+                print('ПОБЕДА!')
+            else:
+                print('Действия закончились')
 
     def __get_safe_spot(self) -> bool:
-        if self.output:
-            print('Пытаюсь угадать...')
-
         chances = []
         for i in range(len(self.game_field.field_array)):
             chances.append([])
@@ -91,7 +94,8 @@ class Game:
 
         if min_x != -1:
             if self.output:
-                print(f'Взял клетку с шансом {chances[min_x][min_y]} координаты {min_x} {min_y}')
+                print('Пытаюсь угадать...')
+                print(f'Взял клетку с шансом встретить мину {chances[min_x][min_y]}, координаты {min_x} {min_y}')
             self.__open_ceil(min_x, min_y)
             if self.game_field.update_field():
                 self.is_stopped = True
@@ -112,6 +116,9 @@ class Game:
         if self.game_field.field_array[x][y] != Cell.FLAG:
             if self.output:
                 print(f'Нашел мину в {x} {y}')
+
+            if not self.no_flags:
+                self.game_field.put(x, y, Cell.FLAG)
             self.game_field.field_array[x][y] = Cell.FLAG
 
     def __detect_to_open(self) -> bool:
