@@ -124,6 +124,7 @@ class Game:
                             mines_num = 0
                             for x in range(-1, 2):
                                 for y in range(-1, 2):
+
                                     if len(self.game_field.field_array) > i + x >= 0 and \
                                             len(self.game_field.field_array[i]) > j + y >= 0:
 
