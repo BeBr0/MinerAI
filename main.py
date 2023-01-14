@@ -1,4 +1,5 @@
 import copy
+import time
 
 import pyautogui as pag
 from pynput import mouse, keyboard
@@ -19,7 +20,7 @@ class Main:
 
         self.field = None
 
-        self.output = True
+        self.output = False
 
     def on_click(self, x: int, y: int, button, pressed: bool):
         if self.field is None:
@@ -35,7 +36,6 @@ class Main:
             field = copy.deepcopy(self.field)
             while True:
                 Game(field, self.output)
-
                 field_copy = []
                 for i in range(self.field.field_size_cubes_y):
                     field_copy.append([])
@@ -45,6 +45,7 @@ class Main:
                 field.field_array = field_copy
 
                 pag.click(x=x, y=y, button="MIDDLE")
+                time.sleep(1)
                 pag.click(x=x, y=y, button="LEFT")
 
                 field.update_field()
