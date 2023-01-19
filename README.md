@@ -9,6 +9,8 @@
 - Only works on https://minesweeper.online
 - Fast and setisfying game solving
 - Easy to set up
+- Use backspace any time to stop the program
+- Does not inject into game, it just uses your cursor for all manipulations 
 
 ### Manual
 After cloning the project, start the main.py file and follow the quick set up. 
