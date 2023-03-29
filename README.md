@@ -15,3 +15,5 @@
 ### Manual
 After cloning the project, start the main.py file and follow the quick set up. 
 If you need automatic new game start, enable "start new game by middle click" in website options.
+
+## This script is almost the same as CHEAT. Use on your own risk of getting banned on Minesweeper website
